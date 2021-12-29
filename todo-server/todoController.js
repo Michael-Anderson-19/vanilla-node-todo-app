@@ -22,11 +22,8 @@ const getAllItems = async (res, headers) => {
         const results = await todoModel.getAll();
 
         return JSON.stringify({ status: 200, message: "ok", data: results })
-        //res.end(JSON.stringify({ status: 200, message: "ok", data: results }))
     } catch (e) {
-        //console.log("Error ", e);
         return response.createResponse(res, 500, "Internal Server Error " + e)
-        //res.end(response.createResponse(res, 500, "Internal Server Error"))
     }
 
 }
@@ -44,42 +41,25 @@ const getSingleItem = async (req, res) => {
         return response.createResponse(res, 500,"Internal Server Error: " + e);
     }
 }
+
 const addItem = async (req, res ) => {
-    let buffer = [];
+
     try {
-        //req.on("data", chunk => {
-        //inputData += chunk; 
-        //})
-        for await (const chunk of req) {
-            buffer.push(chunk);
-        }
+        const data = await getParameters(req); 
 
-        const data = JSON.parse(Buffer.concat(buffer).toString());
-
-        //req.on("end", async () => {
-        //  inputData = JSON.parse(inputData); 
         const results = await todoModel.addItem(data.content);
 
         return response.createResponse(res, 200, "ok", results);
-        //})
     } catch (e) {
         return response.createResponse(res, 500, "Internal Server Error");
     }
 }
 const updateItemContent = async (req, res, ) => {
-    let buffer = []
-    console.log("this si the thing ")
+
     try {
 
-        //for await (const chunk of req) {
-        //    buffer.push(chunk);
-        //}
-         
+        const data = await getParameters(req); 
 
-        const data = await getParameters(req);//JSON.parse(Buffer.concat(buffer).toString());
-
-        
-        
         const results = await todoModel.updateContent(data.id, data.content);
         
         return response.createResponse(res, 200, "ok", results);
@@ -90,46 +70,34 @@ const updateItemContent = async (req, res, ) => {
 }
 const setItemComplete = async (req, res) => {
 
-    let buffer = []
     try {
-        for await (const chunk of req) {
-            buffer.push(chunk);
-        }
-
-        const data = JSON.parse(Buffer.concat(buffer).toString());
+        
+        const data = await getParameters(req); 
 
         const item = await todoModel.getById(data.id);
-
 
         let completeState = item[0].completed === 0 ? 1 : 0;
         const results = await todoModel.setComplete(item[0].id, completeState);
 
         return response.createResponse(res, 200,"ok", results);
-        // res.end(JSON.stringify({status: 200, message: "ok", data: results}));
-        return
     }
     catch (e) {
         return response.createResponse(res, 500, "Internal Server Error");
     }
 }
+
 const deleteItem = async (req, res) => {
 
     const buffer = [];
     try {
 
-        for await (const chunk of req) {
-            buffer.push(chunk);
-        }
-        //this whole section can be moved out into a seperate function maytbe in a controller 
-        const data = JSON.parse(Buffer.concat(buffer).toString());
+        const data = await getParameters(req);
 
         const results = await todoModel.deleteItem(data.id);
         return response.createResponse(res, 200, "ok", results);
-        // res.end(JSON.stringify({status: 200, message: "ok", data:results}));
 
     } catch (e) {
         return response.createResponse(res, 500, "Internal Server Error");
-        //handle error
     }
 
 
