@@ -1,7 +1,7 @@
 CREATE DATABASE `todolist`;
 
 CREATE TABLE `todolists` (
-  `id` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `content` varchar(255)  NOT NULL,
   `created_at` bigint(100) DEFAULT NULL,
   `updated_at` bigint(100) DEFAULT NULL,
